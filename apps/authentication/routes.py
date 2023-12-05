@@ -28,9 +28,16 @@ from apps.authentication.util import verify_pass, generate_token
 # Bind API -> Auth BP
 api = Api(blueprint)
 
+# @blueprint.route('/')
+# def route_default():
+#     return redirect(url_for('authentication_blueprint.login'))
+
+
 @blueprint.route('/')
 def route_default():
-    return redirect(url_for('authentication_blueprint.login'))
+    return render_template('home/index.html', segment='index')
+
+
 
 # Login & Registration
 

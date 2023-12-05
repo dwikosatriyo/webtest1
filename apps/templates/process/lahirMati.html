@@ -1,0 +1,407 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Dashboard {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid py-4">
+
+      
+
+      <div class="row mt-4">
+        <div class="col-lg-12">
+          <div class="card z-index-2">
+            <div class="card-header pb-0">
+              <h6>Grafik Kelahiran vs Kematian</h6>
+             
+              <div class="selectBOx">
+                <select name="" id="buttonJenisKelamin">
+                  <option value="0">All</option>
+                  <option value="1">Laki-Laki</option>
+                  <option value="2">Perempuan</option>
+                </select>
+
+              </div>
+            
+            </div>
+            <div class="card-body p-3">
+              <div class="chart">
+                <canvas id="chart1" class="chart-canvas" height="300"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row mt-4">
+        <div class="col-lg-12">
+          <div class="card z-index-2">
+            <div class="card-header pb-0">
+              <h6>Sales overview</h6>
+              
+            </div>
+            <div class="card-body p-3">
+              <div class="chart">
+                <canvas id="chart2" class="chart-canvas" height="300"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row mt-4">
+        <div class="col-lg-12">
+          <div class="card z-index-2">
+            <div class="card-header pb-0">
+              <h6>Sales overview</h6>
+              
+            </div>
+            <div class="card-body p-3">
+              <div class="chart">
+                <canvas id="chart3" class="chart-canvas" height="300"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      
+
+      {% include "includes/footer.html" %}
+
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+  
+  <script src="{{ config.ASSETS_ROOT }}/js/plugins/chartjs.min.js"></script>
+  <script>
+    
+      var lahir_lakiLaki = {{data[0]|tojson }}
+      var lahir_perempuan = {{data[1]|tojson }}
+      var lahir_all = {{data[2]|tojson }}
+      var mati_lakiLaki = {{data[3]|tojson }}
+      var mati_perempuan = {{data[4]|tojson }}
+      var mati_all = {{data[5]|tojson }}
+      const ctx = document.getElementById("chart1").getContext("2d");
+      const ctx2 = document.getElementById("chart2").getContext("2d");
+      const ctx3 = document.getElementById("chart3").getContext("2d");
+
+      var gradientStroke1 = ctx.createLinearGradient(0, 230, 0, 50);
+
+      gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
+      gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+      gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)'); //purple colors
+
+      var gradientStroke2 = ctx.createLinearGradient(0, 230, 0, 50);
+
+      gradientStroke2.addColorStop(1, 'rgba(20,23,39,0.2)');
+      gradientStroke2.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+      gradientStroke2.addColorStop(0, 'rgba(20,23,39,0)'); //purple colors
+
+      const chart1 = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: ["Jan","Feb","March","Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+          datasets: [{
+              label: "Kelahiran",
+              tension: 0.4,
+              borderWidth: 0,
+              pointRadius: 0,
+              borderColor: "#cb0c9f",
+              borderWidth: 3,
+              backgroundColor: gradientStroke1,
+              fill: true,
+              data: lahir_all,
+              maxBarThickness: 6
+
+            },
+            {
+              label: "Kematian",
+              tension: 0.4,
+              borderWidth: 0,
+              pointRadius: 0,
+              borderColor: "#575f9a",
+              borderWidth: 3,
+              backgroundColor: gradientStroke2,
+              fill: true,
+              data: mati_all,
+              maxBarThickness: 6
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+            }
+          },
+          interaction: {
+            intersect: false,
+            mode: 'index',
+          },
+          scales: {
+            y: {
+              grid: {
+                drawBorder: false,
+                display: true,
+                drawOnChartArea: true,
+                drawTicks: false,
+                borderDash: [5, 5]
+              },
+              ticks: {
+                display: true,
+                padding: 10,
+                color: '#b2b9bf',
+                font: {
+                  size: 11,
+                  family: "Open Sans",
+                  style: 'normal',
+                  lineHeight: 2
+                },
+              }
+            },
+            x: {
+              grid: {
+                drawBorder: false,
+                display: false,
+                drawOnChartArea: false,
+                drawTicks: false,
+                borderDash: [5, 5]
+              },
+              ticks: {
+                display: true,
+                color: '#b2b9bf',
+                padding: 20,
+                font: {
+                  size: 11,
+                  family: "Open Sans",
+                  style: 'normal',
+                  lineHeight: 2
+                },
+              }
+            },
+          },
+        },
+      });
+
+      const chart2 = new Chart(ctx2, {
+        type: "line",
+        data: {
+          labels: ["Jan","Feb","March","Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+          datasets: [{
+              label: "Laki-Laki",
+              tension: 0.4,
+              borderWidth: 0,
+              pointRadius: 0,
+              borderColor: "#cb0c9f",
+              borderWidth: 3,
+              backgroundColor: gradientStroke1,
+              fill: true,
+              data: lahir_lakiLaki,
+              maxBarThickness: 6
+
+            },
+            {
+              label: "Perempuan",
+              tension: 0.4,
+              borderWidth: 0,
+              pointRadius: 0,
+              borderColor: "#575f9a",
+              borderWidth: 3,
+              backgroundColor: gradientStroke2,
+              fill: true,
+              data: lahir_perempuan,
+              maxBarThickness: 6
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+            }
+          },
+          interaction: {
+            intersect: false,
+            mode: 'index',
+          },
+          scales: {
+            y: {
+              grid: {
+                drawBorder: false,
+                display: true,
+                drawOnChartArea: true,
+                drawTicks: false,
+                borderDash: [5, 5]
+              },
+              ticks: {
+                display: true,
+                padding: 10,
+                color: '#b2b9bf',
+                font: {
+                  size: 11,
+                  family: "Open Sans",
+                  style: 'normal',
+                  lineHeight: 2
+                },
+              }
+            },
+            x: {
+              grid: {
+                drawBorder: false,
+                display: false,
+                drawOnChartArea: false,
+                drawTicks: false,
+                borderDash: [5, 5]
+              },
+              ticks: {
+                display: true,
+                color: '#b2b9bf',
+                padding: 20,
+                font: {
+                  size: 11,
+                  family: "Open Sans",
+                  style: 'normal',
+                  lineHeight: 2
+                },
+              }
+            },
+          },
+        },
+      });
+
+      const chart3 = new Chart(ctx3, {
+        type: "line",
+        data: {
+          labels: ["Jan","Feb","March","Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+          datasets: [{
+              label: "Laki-Laki",
+              tension: 0.4,
+              borderWidth: 0,
+              pointRadius: 0,
+              borderColor: "#cb0c9f",
+              borderWidth: 3,
+              backgroundColor: gradientStroke1,
+              fill: true,
+              data: mati_lakiLaki,
+              maxBarThickness: 6
+
+            },
+            {
+              label: "Perempuan",
+              tension: 0.4,
+              borderWidth: 0,
+              pointRadius: 0,
+              borderColor: "#575f9a",
+              borderWidth: 3,
+              backgroundColor: gradientStroke2,
+              fill: true,
+              data: mati_perempuan,
+              maxBarThickness: 6
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+            }
+          },
+          interaction: {
+            intersect: false,
+            mode: 'index',
+          },
+          scales: {
+            y: {
+              grid: {
+                drawBorder: false,
+                display: true,
+                drawOnChartArea: true,
+                drawTicks: false,
+                borderDash: [5, 5]
+              },
+              ticks: {
+                display: true,
+                padding: 10,
+                color: '#b2b9bf',
+                font: {
+                  size: 11,
+                  family: "Open Sans",
+                  style: 'normal',
+                  lineHeight: 2
+                },
+              }
+            },
+            x: {
+              grid: {
+                drawBorder: false,
+                display: false,
+                drawOnChartArea: false,
+                drawTicks: false,
+                borderDash: [5, 5]
+              },
+              ticks: {
+                display: true,
+                color: '#b2b9bf',
+                padding: 20,
+                font: {
+                  size: 11,
+                  family: "Open Sans",
+                  style: 'normal',
+                  lineHeight: 2
+                },
+              }
+            },
+          },
+        },
+      });
+    
+      const buttonJenisKelamin = document.getElementById('buttonJenisKelamin')
+      buttonJenisKelamin.addEventListener('change', gantiKelamin);
+      function gantiKelamin (chart, data){
+          console.log(buttonJenisKelamin.value);
+          var jenisKelamin = buttonJenisKelamin.value
+          if (jenisKelamin === "0") {
+            chart1.data.datasets[0].data = lahir_all
+            chart1.data.datasets[1].data = mati_all
+            // ctx.data.datasets[0].data[0].pop()
+            // ctx.data.datasets[0].data[0].push(lahir_all)
+            // ctx.data.datasets[0].data[1].pop()
+            // ctx.data.datasets[0].data[1].push(mati_all)
+          }else if (jenisKelamin === "1"){
+            chart1.data.datasets[0].data = lahir_lakiLaki
+            chart1.data.datasets[1].data = mati_lakiLaki
+            // ctx.data.datasets[0].data[0].pop()
+            // ctx.data.datasets[0].data[0].push(lahir_lakiLaki)
+            // ctx.data.datasets[0].data[1].pop()
+            // ctx.data.datasets[0].data[1].push(mati_lakiLaki)
+          }
+          else if (jenisKelamin === "2"){
+            chart1.data.datasets[0].data = lahir_perempuan
+            chart1.data.datasets[1].data = mati_perempuan
+          }
+          chart1.update();
+          
+          }
+
+        
+          
+      
+  
+  </script>
+
+{% endblock javascripts %}
